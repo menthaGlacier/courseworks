@@ -12,7 +12,7 @@ public:
 			createAndOpenFile();
 		}
 
-		if (file.peek() != EOF) {
+		if (file.peek() == EOF) {
 			std::cerr << "ERR: File is empty even though it shouldn't be"
 				<< "\n" << "Consider to delete file \"CWBin\"" << std::endl;
 			exit(2);
@@ -41,6 +41,28 @@ public:
 		if (file.is_open()) {
 			file.close();
 		}
+	}
+
+private:
+	//
+	void createAndOpenFile() {
+		file.open("CWBin", std::ios::out);
+		if (!file.is_open()) {
+			std::cerr << "ERR: Can't create a file" << std::endl;
+			exit(1);
+		}
+
+		file.close();
+		file.open("CWBin", std::ios::binary | std::ios::in | std::ios::out);
+		if (!file.is_open()) {
+			std::cerr << "ERR: Can't open the file" << std::endl;
+			exit(1);
+		}
+
+		first = -1, last = -1;
+		file.write(reinterpret_cast<char*>(&first), sizeof(first));
+		file.write(reinterpret_cast<char*>(&last), sizeof(last));
+		file.seekg(0);
 	}
 
 private:
