@@ -1,0 +1,11 @@
+# Ignore created binary file
+CWBin
+
+# Ignore compiler output
+cw-out
+
+# Ignore Valgrind log file
+vg-out.txt
+
+# Ignore Terms of Reference
+TZ.txt
