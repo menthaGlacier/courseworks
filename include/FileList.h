@@ -43,6 +43,32 @@ public:
 		}
 	}
 
+	void insert(const T& _data) {
+		Node<T> tail;
+		int64_t pos;
+
+		if (size == 0) {
+			file.seekg(0);
+			first = sizeof(first) * 2; last = sizeof(last) * 2;
+			tail.data = _data; tail.prev = -1; tail.next = -1;
+			file.write(reinterpret_cast<char*>(&first), sizeof(first));
+			file.write(reinterpret_cast<char*>(&last), sizeof(last));
+			file.write(reinterpret_cast<char*>(&tail.prev), sizeof(tail.prev));
+			file.write(reinterpret_cast<char*>(&tail.next), sizeof(tail.next));
+			file.write(reinterpret_cast<char*>(&tail.data), sizeof(tail.data));
+			size += 1;
+		}
+
+		//
+		file.seekg(last);
+		file.seekg(0, std::ios::end);
+		tail.data = _data; tail.prev = last; tail.next = -1;
+		file.write(reinterpret_cast<char*>(&tail.prev), sizeof(tail.prev));
+		file.write(reinterpret_cast<char*>(&tail.next), sizeof(tail.next));
+		file.write(reinterpret_cast<char*>(&tail.data), sizeof(tail.data));
+		size += 1;
+	}
+
 private:
 	//
 	void createAndOpenFile() {

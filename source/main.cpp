@@ -5,5 +5,6 @@
 
 int main() {
 	FileList<int> list;
+	list.insert(77);
 	return 0;
 }
