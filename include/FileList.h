@@ -54,12 +54,14 @@ public:
 		file.seekg(0, std::ios::end);
 		pos = file.tellg();
 
-		// Если список пуст, первый элемент будет после указателей списка
+		// Если список пуст, первый элемент будет после указателей списка.
+		// Иначе, перезаписываем указатель на следующий элемент
 		if (size == 0) {
 			first = sizeof(first) + sizeof(last);
 		} else {
 			file.seekg(last);
-			// TODO
+			overwriteNodePointers(-2, pos);
+			file.seekg(pos);
 		}
 
 		tail.data = _data; tail.prev = last; tail.next = -1;
@@ -73,7 +75,7 @@ public:
 private:
 	// Используется для (пере)создания файла, если его не существует или доступ
 	// к нему не может быть осуществлен. В самом начале записывает указатели
-	// списка со значениями -1. Возвращает файловый указатель на начало файла
+	// списка со значениями -1. Ставит файловый указатель на начало файла
 	void createAndOpenFile() {
 		file.open("CWBin", std::ios::out);
 		if (!file.is_open()) {
@@ -101,6 +103,29 @@ private:
 		file.write(reinterpret_cast<char*>(&first), sizeof(first));
 		file.write(reinterpret_cast<char*>(&last), sizeof(last));
 	}
+
+	// Перезаписывает указатели элемента списка на новые. Подразумевает, что
+	// указатель файла на начале элемента. В конце метода возвращается на него.
+	// Если полученный аргумент -2, то позиция указателя остаётся прежней
+	void overwriteNodePointers(int64_t _prev, int64_t _next) {
+		file.clear();
+		int64_t nodePos = file.tellg();
+
+		if (_prev == -2) {
+			file.seekg(sizeof(_prev), std::ios::cur);
+		} else {
+			file.write(reinterpret_cast<char*>(&_prev), sizeof(_prev));
+		}
+
+		if (_next == -2) {
+			file.seekg(sizeof(_next), std::ios::cur);
+		} else {
+			file.write(reinterpret_cast<char*>(&_next), sizeof(_next));
+		}
+		
+		file.seekg(nodePos);
+	}
+
 private:
 	std::fstream file;
 	int64_t first, last;
