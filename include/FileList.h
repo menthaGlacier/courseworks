@@ -6,17 +6,22 @@
 
 template <class T> class FileList {
 public:
-	// Конструктор файлового списка по умолчанию. Вначале пробует открыть файл
-	// либо создать его, если открытие не осуществилось.
-	FileList() {
-		file.open("CWBin", std::ios::binary | std::ios::in | std::ios::out);
+	// Конструктор файлового списка по умолчанию запрещен
+	FileList() = delete;
+
+	// Конструктор файлового списка с заданным именем файла. Пробует открыть
+	// существующий файл, либо создать нвоый, если файл отсутствует
+	FileList(std::string _name) {
+		name = _name;
+		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
 		if (!file.is_open()) {
-			createAndOpenFile();
+			createAndOpenFile(name);
 		}
 
 		if (file.peek() == EOF) {
 			std::cerr << "ERR: File is empty even though it shouldn't be"
-				<< "\n" << "Consider to delete file \"CWBin\"" << std::endl;
+				<< "\n" << "Consider to delete file \"" << name << "\""
+				<< std::endl;
 			exit(2);
 		}
 
@@ -24,7 +29,8 @@ public:
 		file.read(reinterpret_cast<char*>(&last), sizeof(last));
 		if (file.fail()) {
 			std::cerr << "ERR: Can't read first and/or last file pointer(s)"
-				<< "\n" << "Consider to delete file \"CWBin\"" << std::endl;
+				<< "\n" << "Consider to delete file \"" << name << "\""
+				<< std::endl;
 			exit(2);
 		}
 
@@ -72,21 +78,81 @@ public:
 		size += 1;
 	}
 
+	// Удаление элемента с конца списка
+	void remove() {
+		Node<T> tail;
+		int64_t pos, _first, _last;
+
+		if (size == 0) {
+			std::cout << "List's already empty" << std::endl;
+			return;
+		}
+
+		// Для удаления элемента мы создаем свап-файл, в который будет записан
+		// список без последнего элемента. Т.к. этот элемент может быть в любом
+		// месте файла, мы проходим по всему списку
+		std::fstream swapFile("swap.tmp", std::ios::binary | std::ios::out);
+		if (!swapFile.is_open()) {
+			std::cerr << "ERR: Can't open swap file for deletion" << std::endl;
+			return;
+		}
+
+		file.clear();
+		file.seekg(0);
+		file.read(reinterpret_cast<char*>(&_first), sizeof(_first));
+		file.read(reinterpret_cast<char*>(&_last), sizeof(_last));
+
+		// Если указатели списка совпадают, то список либо пуст, либо содержит
+		// только один элемент. Новосозданный файл подходит этому
+		if (_first == _last) {
+			file.close(); swapFile.close();
+			std::remove("swap.tmp");
+			createAndOpenFile(name);
+			size -= 1;
+			return;
+		} else {
+			swapFile.write(reinterpret_cast<char*>(&_first), sizeof(_first));
+			swapFile.write(reinterpret_cast<char*>(&_last), sizeof(_last));
+		}
+
+		for (uint32_t i = 0; i < size; i++) {
+			int64_t tempPos = file.tellg();
+			if (tempPos == last) {
+				continue;
+			}
+
+			tail.read(file);
+			if (tail.next == last) {
+				tail.next = -1;
+				pos = tempPos; 
+			}
+
+			tail.write(swapFile);
+		}
+
+		file.close(); swapFile.close();
+		std::remove(name.c_str());
+		std::rename("swap.tmp", name.c_str());
+		size -= 1; first = _first; last = pos;
+		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
+		overwriteListPointers();
+	}
+
 private:
 	// Используется для (пере)создания файла, если его не существует или доступ
 	// к нему не может быть осуществлен. В самом начале записывает указатели
 	// списка со значениями -1. Ставит файловый указатель на начало файла
-	void createAndOpenFile() {
-		file.open("CWBin", std::ios::out);
+	void createAndOpenFile(std::string _name) {
+		file.open(_name, std::ios::out);
 		if (!file.is_open()) {
 			std::cerr << "ERR: Can't create a file" << std::endl;
 			exit(1);
 		}
 
 		file.close();
-		file.open("CWBin", std::ios::binary | std::ios::in | std::ios::out);
+		file.open(_name, std::ios::binary | std::ios::in | std::ios::out);
 		if (!file.is_open()) {
-			std::cerr << "ERR: Can't open the file" << std::endl;
+			std::cerr << "ERR: Can't open new file" << std::endl;
 			exit(1);
 		}
 
@@ -127,6 +193,7 @@ private:
 	}
 
 private:
+	std::string name;
 	std::fstream file;
 	int64_t first, last;
 	uint32_t size;
