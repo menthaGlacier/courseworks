@@ -12,5 +12,6 @@ int main() {
 	list.insert(-22);
 	list.insert(14);
 	list.remove();
+	list.insert(95, 0);
 	return 0;
 }

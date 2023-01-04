@@ -78,6 +78,32 @@ public:
 		size += 1;
 	}
 
+	void insert(const T& _data, uint32_t index) {
+		Node<T> tail;
+		int64_t pos, _first;
+
+		file.clear();
+		if (index + 1 > size) {
+			std::cout << "Index is higher than a list size" << std::endl
+				<< "Inserting new element at the end" << std::endl;
+			insert(_data);
+			return;
+		}
+
+		if (index == 0) {
+			tail.data = _data; tail.prev = -1; tail.next = first;
+			file.seekg(0, std::ios::end);
+			pos = file.tellg();
+			tail.write(file);
+			file.seekg(first);
+			overwriteNodePointers(pos, -2);
+			first = pos;
+			overwriteListPointers();
+			size += 1;
+			return;
+		}
+	}
+
 	// Удаление элемента с конца списка
 	void remove() {
 		Node<T> tail;
@@ -188,7 +214,7 @@ private:
 		} else {
 			file.write(reinterpret_cast<char*>(&_next), sizeof(_next));
 		}
-		
+
 		file.seekg(nodePos);
 	}
 
