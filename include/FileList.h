@@ -80,7 +80,7 @@ public:
 
 	void insert(const T& _data, uint32_t index) {
 		Node<T> tail;
-		int64_t pos, _first;
+		int64_t pos;
 
 		file.clear();
 		if (index + 1 > size) {
@@ -102,6 +102,22 @@ public:
 			size += 1;
 			return;
 		}
+
+		file.seekg(first);
+		for (uint32_t i = 0; i < index; i++) {
+			pos = file.tellg();
+			tail.read(file);
+			file.seekg(tail.next);
+		}
+
+		tail.data = _data; tail.prev = pos;
+		file.seekg(0, std::ios::end);
+		pos = file.tellg();
+		tail.write(file);
+		file.seekg(tail.prev);
+		overwriteNodePointers(-2, pos);
+		overwriteNodePointers(pos, -2);
+		size += 1;
 	}
 
 	// Удаление элемента с конца списка
