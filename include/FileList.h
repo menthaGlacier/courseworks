@@ -164,6 +164,22 @@ public:
 		overwriteListPointers();
 	}
 
+	void print() {
+		std::cout << "List from " << name << " file:" << std::endl;
+		if (size == 0) {
+			std::cout << "EMPTY" << std::endl;
+		} else {
+			Node<T> tail;
+			file.seekg(first);
+			for (uint32_t i; i < size; i++) {
+				tail.read(file);
+				std::cout << "\t" << "Element #" << i << " "
+					<< tail.data << std::endl;
+				file.seekg(tail.next);
+			}
+		}
+	}
+
 private:
 	// Используется для (пере)создания файла, если его не существует или доступ
 	// к нему не может быть осуществлен. В самом начале записывает указатели

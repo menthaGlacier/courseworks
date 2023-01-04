@@ -13,5 +13,6 @@ int main() {
 	list.insert(14);
 	list.remove();
 	list.insert(95, 0);
+	list.print();
 	return 0;
 }
