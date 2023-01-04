@@ -171,7 +171,7 @@ public:
 		} else {
 			Node<T> tail;
 			file.seekg(first);
-			for (uint32_t i; i < size; i++) {
+			for (uint32_t i = 0; i < size; i++) {
 				tail.read(file);
 				std::cout << "\t" << "Element #" << i << " "
 					<< tail.data << std::endl;
