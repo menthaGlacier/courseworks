@@ -83,9 +83,12 @@ public:
 		int64_t pos;
 
 		file.clear();
-		if (index + 1 > size) {
-			std::cout << "Index is higher than a list size" << std::endl
-				<< "Inserting new element at the end" << std::endl;
+		if (index + 1 >= size) {
+			if (index + 1 > size && size != 0) {
+				std::cout << "Index is higher than a list size" << std::endl
+					<< "Inserting new element at the end" << std::endl;
+			}
+
 			insert(_data);
 			return;
 		}
