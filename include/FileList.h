@@ -83,8 +83,8 @@ public:
 		int64_t pos;
 
 		file.clear();
-		if (index + 1 >= size) {
-			if (index + 1 > size && size != 0) {
+		if (index + 1 > size) {
+			if (index == 0 && size != 0) {
 				std::cout << "Index is higher than a list size" << std::endl
 					<< "Inserting new element at the end" << std::endl;
 			}
@@ -126,10 +126,14 @@ public:
 	// Удаление элемента с конца списка
 	void remove() {
 		Node<T> tail;
-		int64_t pos, _first, _last;
+		int64_t pos;
 
 		if (size == 0) {
 			std::cout << "List's already empty" << std::endl;
+			return;
+		} else if (first == last) {
+			file.close();
+			createAndOpenFile(name);
 			return;
 		}
 
@@ -142,24 +146,11 @@ public:
 			return;
 		}
 
+		swapFile.write(reinterpret_cast<char*>(&first), sizeof(first));
+		swapFile.write(reinterpret_cast<char*>(&last), sizeof(last));
+
 		file.clear();
-		file.seekg(0);
-		file.read(reinterpret_cast<char*>(&_first), sizeof(_first));
-		file.read(reinterpret_cast<char*>(&_last), sizeof(_last));
-
-		// Если указатели списка совпадают, то список либо пуст, либо содержит
-		// только один элемент. Новосозданный файл подходит этому
-		if (_first == _last) {
-			file.close(); swapFile.close();
-			std::remove("swap.tmp");
-			createAndOpenFile(name);
-			size -= 1;
-			return;
-		} else {
-			swapFile.write(reinterpret_cast<char*>(&_first), sizeof(_first));
-			swapFile.write(reinterpret_cast<char*>(&_last), sizeof(_last));
-		}
-
+		file.seekg(first);
 		for (uint32_t i = 0; i < size; i++) {
 			int64_t tempPos = file.tellg();
 			if (tempPos == last) {
@@ -178,8 +169,8 @@ public:
 		file.close(); swapFile.close();
 		std::remove(name.c_str());
 		std::rename("swap.tmp", name.c_str());
-		size -= 1; first = _first; last = pos;
 		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
+		last = pos; size -= 1;
 		overwriteListPointers();
 	}
 
@@ -217,7 +208,7 @@ private:
 			exit(1);
 		}
 
-		first = -1, last = -1;
+		first = -1; last = -1; size = 0;
 		overwriteListPointers();
 		file.seekg(0);
 	}
