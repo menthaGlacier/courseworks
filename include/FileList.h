@@ -119,6 +119,7 @@ public:
 		tail.write(file);
 		file.seekg(tail.prev);
 		overwriteNodePointers(-2, pos);
+		file.seekg(tail.next);
 		overwriteNodePointers(pos, -2);
 		size += 1;
 	}
@@ -190,6 +191,24 @@ public:
 		}
 	}
 
+	void debugPrint() {
+		std::cout << "List from " << name << " file:" << std::endl;
+		if (size == 0) {
+			std::cout << "EMPTY" << std::endl;
+		} else {
+			std::cout << "First: " << first << " Last: " << last << std::endl;
+			Node<T> tail;
+			file.seekg(first);
+			for (uint32_t i = 0; i < size; i++) {
+				int64_t pos = file.tellg();
+				tail.read(file);
+				std::cout << "\t" << "Element #" << i << " " << "Pos: " << pos
+					<< " Prev: " << tail.prev << " Next: " << tail.next
+					<< " Data: " << tail.data << std::endl;
+				file.seekg(tail.next);
+			}
+		}
+	}
 private:
 	// Используется для (пере)создания файла, если его не существует или доступ
 	// к нему не может быть осуществлен. В самом начале записывает указатели
