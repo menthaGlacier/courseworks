@@ -139,8 +139,8 @@ public:
 		}
 
 		// Для удаления элемента мы создаем свап-файл, в который будет записан
-		// список без последнего элемента. Т.к. этот элемент может быть в любом
-		// месте файла, мы проходим по всему списку
+		// список без последнего элемента. В процессе записи в свап-файл список
+		// будет "выравнен" т.к. это упрощает операцию и придает порядок списку
 		std::fstream swapFile("swap.tmp", std::ios::binary | std::ios::out);
 		if (!swapFile.is_open()) {
 			std::cerr << "ERR: Can't open swap file for deletion" << std::endl;
@@ -153,15 +153,35 @@ public:
 		file.clear();
 		file.seekg(first);
 		for (uint32_t i = 0; i < size; i++) {
-			int64_t tempPos = file.tellg();
-			if (tempPos == last) {
-				continue;
+			pos = swapFile.tellg();
+			tail.read(file);
+
+			// Если указатель на предыдущий элемент равен -1, то прочитанный
+			// элемент должен быть первым, тогда перезаписываем указатель на
+			// первый элемент списка. Иначе элемент является очередным и
+			// перезаписывается его указатель на предыдущий элемент
+			if (tail.prev == -1) {
+				first = pos;
+			} else {
+				tail.prev = (pos - sizeof(tail.prev)
+					- sizeof(tail.data) - sizeof(tail.next));
 			}
 
-			tail.read(file);
-			if (tail.next == last) {
+			// Аналогично, если указатель на следующий элемент равен указателю
+			// на последний элемент списка, то этот элемент становится новым
+			// концом спиcка. Иначе элемент очередной, его указатель на
+			// следующий элемент перезаписывается на позицию следующего элемент
+			// и мы продвигаемся по списку
+			if (tail.next == -1) {
+				break;
+			} else if (tail.next == last) {
+				file.seekg(tail.next);
 				tail.next = -1;
-				pos = tempPos; 
+				last = pos;
+			} else {
+				file.seekg(tail.next);
+				tail.next = (pos + sizeof(tail.prev)
+					+ sizeof(tail.data) + sizeof(tail.next));
 			}
 
 			tail.write(swapFile);
@@ -171,8 +191,8 @@ public:
 		std::remove(name.c_str());
 		std::rename("swap.tmp", name.c_str());
 		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
-		last = pos; size -= 1;
 		overwriteListPointers();
+		size -= 1;
 	}
 
 	void print() {

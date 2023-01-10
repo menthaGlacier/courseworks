@@ -9,15 +9,19 @@ int main() {
 	list.remove();
 
 	list.insert(220);
-	list.insert(110);
-	list.insert(-22);
-	list.insert(14);
+	list.insert(110, 0);
+	list.insert(-22, 1);
+	list.insert(14, 1);
+	list.debugPrint();
 	list.remove();
+	list.debugPrint();
 
 	list.insert(95, 0);
-	list.print();
+	list.debugPrint();
 
 	list.insert(3, 3);
-	list.print();
+	list.debugPrint();
+	list.remove();
+	list.debugPrint();
 	return 0;
 }
