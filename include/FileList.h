@@ -6,12 +6,14 @@
 
 template <class T> class FileList {
 public:
-	// Конструктор файлового списка по умолчанию запрещен
+	// Конструктор файлового списка по умолчанию и копирования запрещены, т.к.
+	// файл должен иметь имя и быть открыт только единожды
 	FileList() = delete;
+	FileList(const FileList<T>& copy) = delete;
 
 	// Конструктор файлового списка с заданным именем файла. Пробует открыть
 	// существующий файл, либо создать нвоый, если файл отсутствует
-	FileList(std::string _name) {
+	FileList(const std::string& _name) {
 		name = _name;
 		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
 		if (!file.is_open()) {
@@ -229,11 +231,12 @@ public:
 			}
 		}
 	}
+
 private:
 	// Используется для (пере)создания файла, если его не существует или доступ
 	// к нему не может быть осуществлен. В самом начале записывает указатели
 	// списка со значениями -1. Ставит файловый указатель на начало файла
-	void createAndOpenFile(std::string _name) {
+	void createAndOpenFile(const std::string& _name) {
 		file.open(_name, std::ios::out);
 		if (!file.is_open()) {
 			std::cerr << "ERR: Can't create a file" << std::endl;
