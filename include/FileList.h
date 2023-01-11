@@ -228,10 +228,12 @@ public:
 			
 			if (i == index && index != 0) {
 				file.seekg(tail.next);
+				size -= 1;
 				continue;
 			}
 
-			//
+			// Если необходимо удалить первый элемент, пропускаем его и делаем
+			// следующий элемент новым первым элементом
 			if (tail.prev == - 1) {
 				if (index == 0) {
 					file.seekg(tail.next);
@@ -239,6 +241,7 @@ public:
 					tail.prev = -1;
 				}
 
+				size -= 1;
 				first = pos;
 			} else {
 				tail.prev = (pos - sizeof(tail.prev)
@@ -261,7 +264,6 @@ public:
 		std::rename("swap.tmp", name.c_str());
 		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
 		overwriteListPointers();
-		size -= 1;
 	}
 
 	void print() {
