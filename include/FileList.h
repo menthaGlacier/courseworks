@@ -53,7 +53,6 @@ public:
 		}
 	}
 
-	// Вставка элемента в конец списка
 	void insert(const T& _data) {
 		Node<T> tail;
 		int64_t pos;
@@ -84,9 +83,8 @@ public:
 		Node<T> tail;
 		int64_t pos;
 
-		file.clear();
-		if (index + 1 > size) {
-			if (index == 0 && size != 0) {
+		if (index + 1 >= size) {
+			if (!(index == 0 && size == 0) && index + 1 > size) {
 				std::cout << "Index is higher than a list size" << std::endl
 					<< "Inserting new element at the end" << std::endl;
 			}
@@ -95,6 +93,7 @@ public:
 			return;
 		}
 
+		file.clear();
 		if (index == 0) {
 			tail.data = _data; tail.prev = -1; tail.next = first;
 			file.seekg(0, std::ios::end);
@@ -126,7 +125,6 @@ public:
 		size += 1;
 	}
 
-	// Удаление элемента с конца списка
 	void remove() {
 		Node<T> tail;
 		int64_t pos;
@@ -184,6 +182,75 @@ public:
 				file.seekg(tail.next);
 				tail.next = (pos + sizeof(tail.prev)
 					+ sizeof(tail.data) + sizeof(tail.next));
+			}
+
+			tail.write(swapFile);
+		}
+
+		file.close(); swapFile.close();
+		std::remove(name.c_str());
+		std::rename("swap.tmp", name.c_str());
+		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
+		overwriteListPointers();
+		size -= 1;
+	}
+
+	void remove(uint32_t index) {
+		Node<T> tail;
+		int64_t pos;
+
+		if (index + 1 >= size) {
+			if (!(index == 0 && size == 0) && index + 1 > size) {
+				std::cout << "Index is higher than a list size" << std::endl
+					<< "Removing last element" << std::endl;
+			}
+			
+			remove();
+			return;
+		}
+
+		// Аналогично удалению с конца, список будет перезаписан в свап-файл,
+		// кроме элемента находящегося на полученном индексе
+		std::fstream swapFile("swap.tmp", std::ios::binary | std::ios::out);
+		if (!swapFile.is_open()) {
+			std::cerr << "ERR: Can't open swap file for deletion" << std::endl;
+			return;
+		}
+
+		swapFile.write(reinterpret_cast<char*>(&first), sizeof(first));
+		swapFile.write(reinterpret_cast<char*>(&last), sizeof(last));
+
+		file.clear();
+		file.seekg(first);
+		for (uint32_t i = 0; i < size; i++) {
+			pos = swapFile.tellg();
+			tail.read(file);
+			
+			if (i == index && index != 0) {
+				file.seekg(tail.next);
+				continue;
+			}
+
+			//
+			if (tail.prev == - 1) {
+				if (index == 0) {
+					file.seekg(tail.next);
+					tail.read(file);
+					tail.prev = -1;
+				}
+
+				first = pos;
+			} else {
+				tail.prev = (pos - sizeof(tail.prev)
+					- sizeof(tail.data) - sizeof(tail.next));
+			}
+
+			if (tail.next == -1) {
+				last = pos;
+			} else {
+				file.seekg(tail.next);
+				tail.next = (pos + sizeof(tail.prev)
+						+ sizeof(tail.data) + sizeof(tail.next));
 			}
 
 			tail.write(swapFile);

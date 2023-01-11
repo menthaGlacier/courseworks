@@ -12,16 +12,12 @@ int main() {
 	list.insert(110, 0);
 	list.insert(-22, 1);
 	list.insert(14, 1);
+	list.insert(18);
 	list.debugPrint();
 	list.remove();
 	list.debugPrint();
 
-	list.insert(95, 0);
-	list.debugPrint();
-
-	list.insert(3, 3);
-	list.debugPrint();
-	list.remove();
+	list.remove(0);
 	list.debugPrint();
 	return 0;
 }
