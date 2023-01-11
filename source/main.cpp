@@ -13,11 +13,11 @@ int main() {
 	list.insert(-22, 1);
 	list.insert(14, 1);
 	list.insert(18);
-	list.debugPrint();
+	list.print(true);
 	list.remove();
-	list.debugPrint();
+	list.print();
 
 	list.remove(0);
-	list.debugPrint();
+	list.print(true);
 	return 0;
 }

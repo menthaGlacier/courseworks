@@ -266,17 +266,34 @@ public:
 		overwriteListPointers();
 	}
 
-	void print() {
+	// Вывод может быть подробным, т.е. с указанием размера списка, адресов
+	// первого и последнего элементов списка и адресов предыдущего и следующего
+	// элементов списка. По умолчанию вывод не является подробным
+	void print(bool detailed = false) {
 		std::cout << "List from " << name << " file:" << std::endl;
 		if (size == 0) {
 			std::cout << "EMPTY" << std::endl;
 		} else {
 			Node<T> tail;
-			file.seekg(first);
+			file.seekg(first);		
+			if (detailed) {
+				std::cout << "List size: " << size << std::endl;
+				std::cout << "First: " << first << " Last: " << last
+					<< std::endl;
+			}
+
 			for (uint32_t i = 0; i < size; i++) {
 				tail.read(file);
-				std::cout << "\t" << "Element #" << i << " "
-					<< tail.data << std::endl;
+				int64_t pos = file.tellg();
+				std::cout << "\t" << "Element #" << i << " " << tail.data;
+
+				if (detailed) {
+					std::cout << " | " << " Pos: " << pos << " Prev: "
+						<< tail.prev << " Next: " << tail.next << std::endl;
+				} else {
+					std::cout << std::endl;
+				}
+
 				file.seekg(tail.next);
 			}
 		}
