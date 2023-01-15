@@ -19,5 +19,6 @@ int main() {
 
 	list.remove(0);
 	list.print(true);
+	std::cout << "Found at: " << list.find(-22);
 	return 0;
 }

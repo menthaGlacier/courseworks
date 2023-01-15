@@ -5,7 +5,6 @@
 
 template <class TT> class Node {
 private:
-	//
 	bool write(std::fstream& file) {
 		if (!file.is_open()) {
 			return false;
@@ -24,7 +23,6 @@ private:
 		return true;
 	}
 
-	// 
 	bool read(std::fstream& file) {
 		if (!file.is_open()) {
 			return false;
@@ -42,6 +40,13 @@ private:
 		}
 
 		return true;
+	}
+
+	uint32_t getNodeSize() {
+		uint32_t totalSize = 0;
+		totalSize += (sizeof(prev) + sizeof(next));
+		totalSize += sizeof(data);
+		return totalSize;
 	}
 
 private:

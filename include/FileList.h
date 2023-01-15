@@ -266,6 +266,23 @@ public:
 		overwriteListPointers();
 	}
 
+	int64_t find(const T& _data) {
+		Node<T> tail;
+		int64_t pos;
+
+		file.clear();
+		file.seekg(first);
+		for (int64_t i = 0; i < size; i++) {
+			pos = file.tellg();
+			tail.read(file);
+			if (tail.data == _data) {
+				return pos;
+			}
+		}
+
+		return -1;
+	}
+
 	// Вывод может быть подробным, т.е. с указанием размера списка, адресов
 	// первого и последнего элементов списка и адресов предыдущего и следующего
 	// элементов списка. По умолчанию вывод не является подробным
@@ -285,7 +302,7 @@ public:
 			for (uint32_t i = 0; i < size; i++) {
 				tail.read(file);
 				int64_t pos = file.tellg();
-				std::cout << "\t" << "Element #" << i << " " << tail.data;
+				std::cout << "\t" << "Element #" << i << ": " << tail.data;
 
 				if (detailed) {
 					std::cout << " | " << " Pos: " << pos << " Prev: "
@@ -297,6 +314,10 @@ public:
 				file.seekg(tail.next);
 			}
 		}
+	}
+
+	uint32_t getListSize() {
+		return size;
 	}
 
 private:
