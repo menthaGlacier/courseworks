@@ -163,8 +163,7 @@ public:
 			if (tail.prev == -1) {
 				first = pos;
 			} else {
-				tail.prev = (pos - sizeof(tail.prev)
-					- sizeof(tail.data) - sizeof(tail.next));
+				tail.prev = pos - tail.getNodeSize();
 			}
 
 			// Аналогично, если указатель на следующий элемент равен указателю
@@ -180,8 +179,7 @@ public:
 				last = pos;
 			} else {
 				file.seekg(tail.next);
-				tail.next = (pos + sizeof(tail.prev)
-					+ sizeof(tail.data) + sizeof(tail.next));
+				tail.next = pos + tail.getNodeSize();
 			}
 
 			tail.write(swapFile);
@@ -244,16 +242,14 @@ public:
 				size -= 1;
 				first = pos;
 			} else {
-				tail.prev = (pos - sizeof(tail.prev)
-					- sizeof(tail.data) - sizeof(tail.next));
+				tail.prev = pos - tail.getNodeSize();
 			}
 
 			if (tail.next == -1) {
 				last = pos;
 			} else {
 				file.seekg(tail.next);
-				tail.next = (pos + sizeof(tail.prev)
-						+ sizeof(tail.data) + sizeof(tail.next));
+				tail.next = pos + tail.getNodeSize();
 			}
 
 			tail.write(swapFile);
@@ -305,7 +301,7 @@ public:
 				std::cout << "\t" << "Element #" << i << ": " << tail.data;
 
 				if (detailed) {
-					std::cout << " | " << " Pos: " << pos << " Prev: "
+					std::cout << " | " << "Pos: " << pos << " Prev: "
 						<< tail.prev << " Next: " << tail.next << std::endl;
 				} else {
 					std::cout << std::endl;
