@@ -296,8 +296,8 @@ public:
 			}
 
 			for (uint32_t i = 0; i < size; i++) {
-				tail.read(file);
 				int64_t pos = file.tellg();
+				tail.read(file);
 				std::cout << "\t" << "Element #" << i << ": " << tail.data;
 
 				if (detailed) {
@@ -309,6 +309,69 @@ public:
 
 				file.seekg(tail.next);
 			}
+		}
+	}
+
+	void sort() {
+		Node<T> tail, prevTail;
+		int64_t pos, prevPos;
+
+		if (size <= 1) {
+			std::cout << "Not enough elements to sort list" << std::endl;
+			return;
+		} else {
+			file.clear();
+			file.seekg(first);
+			pos = file.tellg();
+			tail.read(file);
+		}
+
+		// FIXME Просто нерабочий код, явно починить надо
+		for (uint32_t i = 1; i < size - 1; i++) {
+		for (uint32_t j = 1; j < size - 2; j++) {
+			prevPos = pos;
+			pos = file.tellg();
+			prevTail = tail;
+			tail.read(file);
+
+			if (prevTail.data > tail.data) {
+				if (prevTail.prev == -1) {
+					first = pos;
+				} else if (tail.next == -1) {
+					last = prevPos;
+				}
+
+				// Мы обмениваемся лишь указателями, сами элементы сохраняют
+				// свой порядок внутри файла. Перезаписываем указатели tail,
+				// затем перемещаемся к prevTail и перезаписываем его указатели
+				file.seekg(pos);
+				overwriteNodePointers(prevTail.prev, prevPos);
+				file.seekg(prevPos);
+				overwriteNodePointers(pos, tail.next);
+
+				// Перезаписываем соседние элементы, чтобы они указывали на
+				// новые адреса свапнутых элементов
+				if (prevTail.prev == -1) {
+					first = pos;
+				} else {
+					file.seekg(prevTail.prev);
+					overwriteNodePointers(-2, pos);
+				}
+
+				if (tail.next == -1) {
+					last = prevPos;
+				} else {
+					file.seekg(tail.next);
+					overwriteNodePointers(prevPos, -2);
+				}
+
+				// FIXME Надо сохранять перезаписанный элемент и только затем
+				// переходить на новый
+				file.seekg(tail.next);
+				pos = file.tellg();
+				tail.read(file);
+			}
+		}
 		}
 	}
 
@@ -353,7 +416,7 @@ private:
 	// Если полученный аргумент -2, то позиция указателя остаётся прежней
 	void overwriteNodePointers(int64_t _prev, int64_t _next) {
 		file.clear();
-		int64_t nodePos = file.tellg();
+		int64_t pos = file.tellg();
 
 		if (_prev == -2) {
 			file.seekg(sizeof(_prev), std::ios::cur);
@@ -367,7 +430,7 @@ private:
 			file.write(reinterpret_cast<char*>(&_next), sizeof(_next));
 		}
 
-		file.seekg(nodePos);
+		file.seekg(pos);
 	}
 
 private:

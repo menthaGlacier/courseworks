@@ -19,6 +19,10 @@ int main() {
 
 	list.remove(0);
 	list.print(true);
-	std::cout << "Found at: " << list.find(-22);
+	std::cout << "Found at: " << list.find(-22) << std::endl;
+	list.insert(100);
+	list.insert(12);
+	list.print(true);
+	//list.sort(); // We don't talk about it rn 
 	return 0;
 }
