@@ -16,13 +16,15 @@ void Interface::displayMenu() {
 	std::cout << "Current list name: ";
 		switch (listType) {
 		case ListType::isInt:
-			std::cout << intList->name << std::endl;
+			std::cout << intList->getListName() << std::endl;
 			break;
 		case ListType::isDouble:
-			std::cout << doubleList->name << std::endl;
+			std::cout << doubleList->getListName() << std::endl;
 			break;
-		case ListType::stringType:
-			std::cout << stringList->name << std::endl;
+		case ListType::isString:
+			std::cout << stringList->getListName() << std::endl;
+			break;
+		default:
 			break;
 		}
 	} else {

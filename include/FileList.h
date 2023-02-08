@@ -375,6 +375,10 @@ public:
 		}
 	}
 
+	std::string getListName() {
+		return name;
+	}
+
 	uint32_t getListSize() {
 		return size;
 	}

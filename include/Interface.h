@@ -11,13 +11,15 @@ public:
 	void displayMenu();
 
 private:
+	void displayListSelectionMenu();
+private:
 	enum class ListType {
-		intType, doubleType, stringType
+		None, isInt, isDouble, isString
 	} listType;
 
-	FileList<int> intList;
-	FileList<double> doubleList;
-	FileList<std::string> stringList;
+	FileList<int>* intList;
+	FileList<double>* doubleList;
+	FileList<std::string>* stringList;
 };
 
 #endif /* INTERFACE_H */
