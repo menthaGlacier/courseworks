@@ -7,11 +7,12 @@
 class Interface {
 public:
 	Interface();
-
+	~Interface();
 	void displayMenu();
-
 private:
 	void displayListSelectionMenu();
+	void createNewListMenu();
+	void openExistingListMenu();
 private:
 	enum class ListType {
 		None, isInt, isDouble, isString

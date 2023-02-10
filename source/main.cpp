@@ -2,9 +2,10 @@
 
 #include "../include/dependencies.h"
 #include "../include/FileList.h"
+#include "../include/Interface.h"
 
 int main() {
-	FileList<int64_t> list("cw.bin");
+/*	FileList<int64_t> list("cw.bin");
 	list.insert(13);
 	list.remove();
 
@@ -24,5 +25,7 @@ int main() {
 	list.insert(12);
 	list.print(true);
 	//list.sort(); // We don't talk about it rn 
+*/
+	Interface mainInterface;
 	return 0;
 }
