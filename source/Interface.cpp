@@ -127,7 +127,11 @@ void Interface::createNewListMenu() {
 		std::cin.clear();
 		std::getline(std::cin, input);
 		if (input.length() > 0) {
-			break;
+			if (input == "q" || input == "Q") {
+				std::cout << "The list cannot be named \"q\"" << std::endl;
+			} else {
+				break;
+			}
 		}
 	}
 
@@ -150,5 +154,45 @@ void Interface::createNewListMenu() {
 }
 
 void Interface::openExistingListMenu() {
-	// TODO
+	std::ifstream tryFile;
+
+	std::cout << "Enter existing list name" << std::endl;
+	std::cout << "(if you want to quit, enter \"q\")" << std::endl;
+	
+	std::string input;
+	while (true) {
+		std::cout << ">";
+		std::cin.clear();
+		std::getline(std::cin, input);
+		if (input.length() > 0) {
+			if (input == "q" || input == "Q") {
+				return;
+			} else {
+				tryFile.open(input);
+				if (!tryFile.is_open()) {
+					std::cout << "File was not founded" << std::endl;
+				} else {
+					tryFile.close();
+					break;
+				}
+			}
+		}
+	}
+
+	switch (input[0]) {
+	case 'i':
+		listType = ListType::isInt;
+		intList = new FileList<int>(input);
+		break;
+	case 'd':
+		listType = ListType::isDouble;
+		doubleList = new FileList<double>(input);
+		break;
+	case 's':
+		listType = ListType::isString;
+		stringList = new FileList<std::string>(input);
+		break;
+	default:
+		break;
+	}
 }
