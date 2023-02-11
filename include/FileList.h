@@ -125,6 +125,11 @@ public:
 		size += 1;
 	}
 
+	void insort(const T& data) {
+		insert(data);
+		sort();
+	}
+
 	void remove() {
 		Node<T> tail;
 		int64_t pos;

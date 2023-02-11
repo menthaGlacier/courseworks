@@ -13,6 +13,14 @@ private:
 	void displayListSelectionMenu();
 	void createNewListMenu();
 	void openExistingListMenu();
+
+	void insertElementMenu();
+	void removeElementMenu();
+	void changeElementMenu();
+	void findElementMenu();
+	void outputListMenu();
+	void deleteListMenu();
+	void sortListMenu();
 private:
 	enum class ListType {
 		None, isInt, isDouble, isString

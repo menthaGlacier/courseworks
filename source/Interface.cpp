@@ -196,3 +196,107 @@ void Interface::openExistingListMenu() {
 		break;
 	}
 }
+
+
+void Interface::insertElementMenu() {
+	std::cout << "Enter data" << std::endl;
+
+	std::string data;
+	while (true) {
+		std::cout << ">";
+		std::cin.clear();
+		std::getline(std::cin, data);
+		if (data.length() > 0) {
+			break;
+		}
+	}
+
+	std::cout << "Choose how you want to insert element" << "\t\n"
+		<< "[1] - At the end of list" << "\t\n"
+		<< "[2] - At specifit position" << "\t\n"
+		<< "[3] - Using sorting" << std::endl;
+
+	std::string input;
+	while (true) {
+		std::cout << ">";
+		std::cin.clear();
+		std::getline(std::cin, input);
+		if (input == "1") {
+			switch (listType) {
+			case ListType::isInt:
+				intList->insert(std::stoi(data));
+				break;
+			case ListType::isDouble:
+				doubleList->insert(std::stod(data));
+				break;
+			case ListType::isString:
+				stringList->insert(data);
+				break;
+			default:
+				break;
+			}
+		} else if (input == "2") {
+			std::cout << "Enter index" << std::endl;
+			while (true) {
+				std::cout << ">";
+				std::cin.clear();
+				std::getline(std::cin, input);
+				if (input.length() > 0) {
+					break;
+				}
+			}
+
+			switch (listType) {
+			case ListType::isInt:
+				intList->insert(std::stoi(data), std::stoi(input));
+				break;
+			case ListType::isDouble:
+				doubleList->insert(std::stod(data)), std::stoi(input);
+				break;
+			case ListType::isString:
+				stringList->insert(data), std::stoi(input);
+				break;
+			default:
+				break;
+			}
+		} else if (input == "3") {
+			switch (listType) {
+			case ListType::isInt:
+				intList->insort(std::stoi(data));
+				break;
+			case ListType::isDouble:
+				doubleList->insort(std::stod(data));
+				break;
+			case ListType::isString:
+				stringList->insort(data);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void Interface::removeElementMenu() {
+
+}
+
+void Interface::changeElementMenu() {
+
+}
+
+void Interface::findElementMenu() {
+
+}
+
+void Interface::outputListMenu() {
+
+}
+
+void Interface::deleteListMenu() {
+
+}
+
+void Interface::sortListMenu() {
+
+}
