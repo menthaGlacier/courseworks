@@ -50,12 +50,11 @@ void Interface::displayMenu() {
 		<< "[0] - Change working list" << "\n\t"
 		<< "[1] - Insert element" << "\n\t"
 		<< "[2] - Remove element" << "\n\t"
-		<< "[3] - Change element" << "\n\t"
-		<< "[4] - Find element" << "\n\t"
-		<< "[5] - Output list" << "\n\t"
-		<< "[6] - Delete list" << "\n\t"
-		<< "[7] - Sort list" << "\n\t"
-		<< "[8] - Quit" << std::endl;
+		<< "[3] - Find element" << "\n\t"
+		<< "[4] - Output list" << "\n\t"
+		<< "[5] - Delete list" << "\n\t"
+		<< "[6] - Sort list" << "\n\t"
+		<< "[7] - Quit" << std::endl;
 
 	std::string input;
 	while (true) {
@@ -72,21 +71,18 @@ void Interface::displayMenu() {
 			removeElementMenu();
 			break;
 		} else if (input == "3") {
-			changeElementMenu();
-			break;
-		} else if (input == "4") {
 			findElementMenu();
 			break;
-		} else if (input == "5") {
+		} else if (input == "4") {
 			outputListMenu();
 			break;
-		} else if (input == "6") {
+		} else if (input == "5") {
 			deleteListMenu();
 			break;
-		} else if (input == "7") {
+		} else if (input == "6") {
 			sortListMenu();
 			break;
-		} else if (input == "8") {
+		} else if (input == "7") {
 			exit(0);
 		}
 	}
@@ -222,7 +218,6 @@ void Interface::openExistingListMenu() {
 	}
 }
 
-
 void Interface::insertElementMenu() {
 	std::cout << "Enter data" << std::endl;
 
@@ -263,7 +258,7 @@ void Interface::insertElementMenu() {
 
 			break;
 		} else if (input == "2") {
-			std::cout << "Enter index" << std::endl;
+			std::cout << "Enter an index" << std::endl;
 			while (true) {
 				std::cout << ">";
 				std::cin.clear();
@@ -309,7 +304,59 @@ void Interface::insertElementMenu() {
 }
 
 void Interface::removeElementMenu() {
-	
+	std::cout << "Choose how you want to remove element" << "\t\n"
+		<< "[1] - At the end of list" << "\t\n"
+		<< "[2] - At specifit position" << std::endl;
+
+	std::string input;
+	while (true) {
+		std::cout << ">";
+		std::cin.clear();
+		std::getline(std::cin, input);
+		if (input == "1") {
+			switch (listType) {
+			case ListType::isInt:
+				intList->remove();
+				break;
+			case ListType::isDouble:
+				doubleList->remove();
+				break;
+			case ListType::isString:
+				stringList->remove();
+				break;
+			default:
+				break;
+			}
+
+			break;
+		} else if (input == "2") {
+			std::cout << "Enter an index" << std::endl;
+			while (true) {
+				std::cout << ">";
+				std::cin.clear();
+				std::getline(std::cin, input);
+				if (input.length() > 0) {
+					break;
+				}
+			}
+
+			switch (listType) {
+			case ListType::isInt:
+				intList->remove(std::stoi(input));
+				break;
+			case ListType::isDouble:
+				doubleList->remove(std::stoi(input));
+				break;
+			case ListType::isString:
+				stringList->remove(std::stoi(input));
+				break;
+			default:
+				break;
+			}
+
+			break;
+		}
+	}
 }
 
 void Interface::findElementMenu() {
