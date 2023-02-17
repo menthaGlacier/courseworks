@@ -410,7 +410,39 @@ void Interface::outputListMenu() {
 }
 
 void Interface::deleteListMenu() {
+	std::cout << "You sure you want to delete this list?" << "\t\n"
+		<< "[1] - Yes" << "\t\n"
+		<< "[2] - No" << std::endl;
 
+	std::string input;
+	while (true) {
+		std::cout << ">";
+		std::cin.clear();
+		std::getline(std::cin, input);
+		if (input == "1") {
+			switch (listType) {
+			case ListType::isInt:
+				remove(intList->getListName().c_str());
+				delete intList;
+				break;
+			case ListType::isDouble:
+				remove(doubleList->getListName().c_str());
+				delete doubleList;
+				break;
+			case ListType::isString:
+				remove(stringList->getListName().c_str());
+				delete stringList;
+				break;
+			default:
+				break;
+			}
+
+			listType = ListType::None;
+			break;
+		} else if (input == "2") {
+			return;
+		}
+	}
 }
 
 void Interface::sortListMenu() {
