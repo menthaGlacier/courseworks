@@ -16,7 +16,6 @@ private:
 
 	void insertElementMenu();
 	void removeElementMenu();
-	void changeElementMenu();
 	void findElementMenu();
 	void outputListMenu();
 	void deleteListMenu();

@@ -309,11 +309,7 @@ void Interface::insertElementMenu() {
 }
 
 void Interface::removeElementMenu() {
-
-}
-
-void Interface::changeElementMenu() {
-
+	
 }
 
 void Interface::findElementMenu() {
