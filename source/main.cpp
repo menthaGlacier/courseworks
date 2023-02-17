@@ -27,5 +27,9 @@ int main() {
 	//list.sort(); // We don't talk about it rn 
 */
 	Interface mainInterface;
+	while (true) {
+		mainInterface.displayMenu();
+	}
+
 	return 0;
 }

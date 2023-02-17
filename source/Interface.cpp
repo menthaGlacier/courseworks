@@ -27,7 +27,7 @@ void Interface::displayMenu() {
 	std::cout << "Menu" << std::endl;
 
 	if (listType != ListType::None) {
-	std::cout << "Current list name: ";
+	std::cout << "Current list: ";
 		switch (listType) {
 		case ListType::isInt:
 			std::cout << intList->getListName() << std::endl;
@@ -63,7 +63,32 @@ void Interface::displayMenu() {
 		std::cin.clear();
 		std::getline(std::cin, input);
 
-	// TODO
+		if (input == "0") {
+			// TODO
+		} else if (input == "1") {
+			insertElementMenu();
+			break;
+		} else if (input == "2") {
+			removeElementMenu();
+			break;
+		} else if (input == "3") {
+			changeElementMenu();
+			break;
+		} else if (input == "4") {
+			findElementMenu();
+			break;
+		} else if (input == "5") {
+			outputListMenu();
+			break;
+		} else if (input == "6") {
+			deleteListMenu();
+			break;
+		} else if (input == "7") {
+			sortListMenu();
+			break;
+		} else if (input == "8") {
+			exit(0);
+		}
 	}
 }
 
@@ -235,6 +260,8 @@ void Interface::insertElementMenu() {
 			default:
 				break;
 			}
+
+			break;
 		} else if (input == "2") {
 			std::cout << "Enter index" << std::endl;
 			while (true) {
@@ -259,6 +286,8 @@ void Interface::insertElementMenu() {
 			default:
 				break;
 			}
+
+			break;
 		} else if (input == "3") {
 			switch (listType) {
 			case ListType::isInt:
@@ -273,6 +302,8 @@ void Interface::insertElementMenu() {
 			default:
 				break;
 			}
+
+			break;
 		}
 	}
 }
@@ -290,7 +321,18 @@ void Interface::findElementMenu() {
 }
 
 void Interface::outputListMenu() {
-
+	// TODO finish this
+	switch (listType) {
+	case ListType::isInt:
+		intList->print(true);
+		break;
+	case ListType::isDouble:
+		doubleList->print(true);
+		break;
+	case ListType::isString:
+		stringList->print(true);
+		break;
+	}
 }
 
 void Interface::deleteListMenu() {
