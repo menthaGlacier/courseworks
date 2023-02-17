@@ -288,6 +288,7 @@ public:
 	// первого и последнего элементов списка и адресов предыдущего и следующего
 	// элементов списка. По умолчанию вывод не является подробным
 	void print(bool detailed = false) {
+		file.clear();
 		std::cout << "List from " << name << " file:" << std::endl;
 		if (size == 0) {
 			std::cout << "EMPTY" << std::endl;

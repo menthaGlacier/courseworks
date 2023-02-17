@@ -278,10 +278,10 @@ void Interface::insertElementMenu() {
 				intList->insert(std::stoi(data), std::stoi(input));
 				break;
 			case ListType::isDouble:
-				doubleList->insert(std::stod(data)), std::stoi(input);
+				doubleList->insert(std::stod(data), std::stoi(input));
 				break;
 			case ListType::isString:
-				stringList->insert(data), std::stoi(input);
+				stringList->insert(data, std::stoi(input));
 				break;
 			default:
 				break;
@@ -321,17 +321,48 @@ void Interface::findElementMenu() {
 }
 
 void Interface::outputListMenu() {
-	// TODO finish this
-	switch (listType) {
-	case ListType::isInt:
-		intList->print(true);
-		break;
-	case ListType::isDouble:
-		doubleList->print(true);
-		break;
-	case ListType::isString:
-		stringList->print(true);
-		break;
+	std::cout << "Choose an output type" << "\t\n"
+		<< "[1] - Regular" << "\t\n"
+		<< "[2] - Detailed" << std::endl;
+
+	std::string input;
+	while (true) {
+		std::cout << ">";
+		std::cin.clear();
+		std::getline(std::cin, input);
+		if (input == "1") {
+			switch (listType) {
+			case ListType::isInt:
+				intList->print();
+				break;
+			case ListType::isDouble:
+				doubleList->print();
+				break;
+			case ListType::isString:
+				stringList->print();
+				break;
+			default:
+				break;
+			}
+
+			break;
+		} else if (input == "2") {
+			switch (listType) {
+			case ListType::isInt:
+				intList->print(true);
+				break;
+			case ListType::isDouble:
+				doubleList->print(true);
+				break;
+			case ListType::isString:
+				stringList->print(true);
+				break;
+			default:
+				break;
+			}
+
+			break;
+		}
 	}
 }
 
