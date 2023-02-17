@@ -360,7 +360,39 @@ void Interface::removeElementMenu() {
 }
 
 void Interface::findElementMenu() {
+	std::cout << "Enter data" << std::endl;
 
+	std::string data;
+	while (true) {
+		std::cout << ">";
+		std::cin.clear();
+		std::getline(std::cin, data);
+		if (data.length() > 0) {
+			break;
+		}
+	}
+
+	int64_t pos = -1;
+	switch (listType) {
+	case ListType::isInt:
+		pos = intList->find(std::stoi(data));
+		break;
+	case ListType::isDouble:
+		pos = doubleList->find(std::stod(data));
+		break;
+	case ListType::isString:
+		pos = stringList->find(data);
+		break;
+	default:
+		break;
+	}
+
+	std::cout << "Search results" << "\n\t";
+	if (pos != -1) {
+		std::cout << "Found " << data << " in position: " << pos << std::endl;
+	} else {
+		std::cout << "Nothing was found" << std::endl;
+	}
 }
 
 void Interface::outputListMenu() {
