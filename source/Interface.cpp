@@ -478,5 +478,17 @@ void Interface::deleteListMenu() {
 }
 
 void Interface::sortListMenu() {
-
+	switch (listType) {
+	case ListType::isInt:
+		intList->sort();
+		break;
+	case ListType::isDouble:
+		doubleList->sort();
+		break;
+	case ListType::isString:
+		stringList->sort();
+		break;
+	default:
+		break;
+	}
 }
