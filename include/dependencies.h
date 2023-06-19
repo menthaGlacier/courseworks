@@ -2,6 +2,7 @@
 #define DEPENDENCIES_H
 
 #include <iostream>
+#include <cstdint>
 #include <fstream>
 #include <string>
 
