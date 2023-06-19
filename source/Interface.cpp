@@ -233,7 +233,7 @@ void Interface::insertElementMenu() {
 
 	std::cout << "Choose how you want to insert element" << "\t\n"
 		<< "[1] - At the end of list" << "\t\n"
-		<< "[2] - At specifit position" << "\t\n"
+		<< "[2] - At specific position" << "\t\n"
 		<< "[3] - Using sorting" << std::endl;
 
 	std::string input;
@@ -306,7 +306,7 @@ void Interface::insertElementMenu() {
 void Interface::removeElementMenu() {
 	std::cout << "Choose how you want to remove element" << "\t\n"
 		<< "[1] - At the end of list" << "\t\n"
-		<< "[2] - At specifit position" << std::endl;
+		<< "[2] - At specific position" << std::endl;
 
 	std::string input;
 	while (true) {
