@@ -37,6 +37,7 @@ public:
 		}
 
 		Node<T> tail;
+		file.seekg(first);
 		while (tail.read(file)) {
 			size += 1;
 			if (tail.next != -1) {
@@ -87,10 +88,10 @@ public:
 			if (!(index == 0 && size == 0) && index + 1 > size) {
 				std::cout << "Index is higher than a list size" << std::endl
 					<< "Inserting new element at the end" << std::endl;
-			}
 
-			insert(_data);
-			return;
+				insert(_data);
+				return;
+			}
 		}
 
 		file.clear();
