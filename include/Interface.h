@@ -25,7 +25,7 @@ private:
 		None, isInt, isDouble, isString
 	} listType;
 
-	FileList<int>* intList;
+	FileList<long>* intList;
 	FileList<double>* doubleList;
 	FileList<std::string>* stringList;
 };

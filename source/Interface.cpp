@@ -161,7 +161,7 @@ void Interface::createNewListMenu() {
 	
 	switch (listType) {
 	case ListType::isInt:
-		intList = new FileList<int>(name);
+		intList = new FileList<long>(name);
 		break;
 	case ListType::isDouble:
 		doubleList = new FileList<double>(name);
@@ -203,7 +203,7 @@ void Interface::openExistingListMenu() {
 	switch (input[0]) {
 	case 'i':
 		listType = ListType::isInt;
-		intList = new FileList<int>(input);
+		intList = new FileList<long>(input);
 		break;
 	case 'd':
 		listType = ListType::isDouble;
