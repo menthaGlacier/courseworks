@@ -42,11 +42,19 @@ private:
 		return true;
 	}
 
-	uint32_t getNodeSize() {
+	uint32_t getNodeSize() const {
 		uint32_t totalSize = 0;
 		totalSize += (sizeof(prev) + sizeof(next));
 		totalSize += sizeof(data);
 		return totalSize;
+	}
+
+	bool operator<(const Node<TT>& l, const Node<TT>& r) const {
+		return l.data < r.data;
+	}
+
+	bool operator>(const Node<TT>& l, const Node<TT>& r) const {
+		return l.data > r.data;
 	}
 
 private:
