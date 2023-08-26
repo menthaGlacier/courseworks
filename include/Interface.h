@@ -3,6 +3,7 @@
 
 #include "dependencies.h"
 #include "FileList.h"
+#include "FileListString.h"
 
 class Interface {
 public:
@@ -20,6 +21,7 @@ private:
 	void outputListMenu();
 	void deleteListMenu();
 	void sortListMenu();
+	void closeActiveList();
 private:
 	enum class ListType {
 		None, isInt, isDouble, isString

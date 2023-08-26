@@ -63,7 +63,9 @@ void Interface::displayMenu() {
 		std::getline(std::cin, input);
 
 		if (input == "0") {
-			// TODO
+			closeActiveList();
+			displayListSelectionMenu();
+			break;
 		} else if (input == "1") {
 			insertElementMenu();
 			break;
@@ -83,6 +85,7 @@ void Interface::displayMenu() {
 			sortListMenu();
 			break;
 		} else if (input == "7") {
+			closeActiveList();
 			exit(0);
 		}
 	}
@@ -136,7 +139,7 @@ void Interface::createNewListMenu() {
 		} else if (input == "3") {
 			listType = ListType::isString;
 			name = "s-";
-			exit(0);
+			break;
 		}
 	}
 
@@ -491,4 +494,23 @@ void Interface::sortListMenu() {
 	default:
 		break;
 	}
+}
+
+void Interface::closeActiveList() {
+	if (intList) {
+		delete intList;
+		intList = nullptr;
+	}
+
+	if (doubleList) {
+		delete doubleList;
+		doubleList = nullptr;
+	}
+
+	if (stringList) {
+		delete stringList;
+		stringList = nullptr;
+	}
+
+	listType = ListType::None;
 }
