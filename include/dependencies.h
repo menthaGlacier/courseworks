@@ -2,8 +2,8 @@
 #define DEPENDENCIES_H
 
 #include <iostream>
-#include <cstdint>
 #include <fstream>
+#include <cstdint>
 #include <string>
 
 #endif /* DEPENDENCIES_H */
