@@ -9,3 +9,8 @@ vg-out.txt
 
 # Ignore Terms of Reference
 TZ.txt
+
+# Ignore linked lists
+i-*
+d-*
+s-*
