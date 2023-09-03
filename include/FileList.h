@@ -13,17 +13,17 @@ public:
 
 	// Конструктор файлового списка с заданным именем файла. Пробует открыть
 	// существующий файл, либо создать нвоый, если файл отсутствует
-	FileList(const std::string& _name) {
-		name = _name;
+	FileList(const std::string& name) {
+		this->name = name;
 		first = 0, last = 0, size = 0;
-		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
+		file.open(this->name, std::ios::binary | std::ios::in | std::ios::out);
 		if (!file.is_open()) {
-			createAndOpenFile(name);
+			createAndOpenFile(this->name);
 		}
 
 		if (file.peek() == EOF) {
 			std::cerr << "ERR: File is empty even though it shouldn't be"
-				<< "\n" << "Consider to delete file \"" << name << "\""
+				<< "\n" << "Consider to delete file \"" << this->name << "\""
 				<< std::endl;
 			exit(2);
 		}
@@ -32,7 +32,7 @@ public:
 		file.read(reinterpret_cast<char*>(&last), sizeof(last));
 		if (file.fail()) {
 			std::cerr << "ERR: Can't read first and/or last file pointer(s)"
-				<< "\n" << "Consider to delete file \"" << name << "\""
+				<< "\n" << "Consider to delete file \"" << this->name << "\""
 				<< std::endl;
 			exit(2);
 		}
@@ -55,7 +55,7 @@ public:
 		}
 	}
 
-	void insert(const T& _data) {
+	void insert(const T& data) {
 		Node<T> tail;
 		int64_t pos;
 
@@ -73,7 +73,7 @@ public:
 			file.seekg(pos);
 		}
 
-		tail.data = _data; tail.prev = last; tail.next = -1;
+		tail.data = data; tail.prev = last; tail.next = -1;
 		last = file.tellg();
 		overwriteListPointers();
 		file.seekg(0, std::ios::end);
@@ -81,7 +81,7 @@ public:
 		size += 1;
 	}
 
-	void insert(const T& _data, uint32_t index) {
+	void insert(const T& data, uint32_t index) {
 		Node<T> tail;
 		int64_t pos;
 
@@ -90,14 +90,14 @@ public:
 				std::cout << "Index is higher than a list size" << std::endl
 					<< "Inserting new element at the end" << std::endl;
 
-				insert(_data);
+				insert(data);
 				return;
 			}
 		}
 
 		file.clear();
 		if (index == 0) {
-			tail.data = _data; tail.prev = -1; tail.next = first;
+			tail.data = data; tail.prev = -1; tail.next = first;
 			file.seekg(0, std::ios::end);
 			pos = file.tellg();
 			tail.write(file);
@@ -116,7 +116,7 @@ public:
 			file.seekg(tail.next);
 		}
 
-		tail.data = _data; tail.prev = pos;
+		tail.data = data; tail.prev = pos;
 		file.seekg(0, std::ios::end);
 		pos = file.tellg();
 		tail.write(file);
@@ -192,7 +192,8 @@ public:
 			tail.write(swapFile);
 		}
 
-		file.close(); swapFile.close();
+		file.close();
+		swapFile.close();
 		std::remove(name.c_str());
 		std::rename("swap.tmp", name.c_str());
 		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
@@ -269,7 +270,7 @@ public:
 		overwriteListPointers();
 	}
 
-	int64_t find(const T& _data) {
+	int64_t find(const T& data) {
 		Node<T> tail;
 		int64_t pos;
 
@@ -278,7 +279,7 @@ public:
 		for (int64_t i = 0; i < size; i++) {
 			pos = file.tellg();
 			tail.read(file);
-			if (tail.data == _data) {
+			if (tail.data == data) {
 				return pos;
 			}
 		}
@@ -323,8 +324,8 @@ public:
 	}
 
 	void sort() {
-		Node<T> tail, prevTail;
-		int64_t pos, prevPos;
+		Node<T> left, right;
+		int64_t leftPos, rightPos;
 
 		if (size < 2) {
 			std::cout << "Not enough elements to sort list" << std::endl;
@@ -333,21 +334,21 @@ public:
 		
 		for (uint32_t i = 0; i < size; i++) {
 			file.seekg(first);
-			pos = file.tellg();
-			tail.read(file);
+			rightPos = file.tellg();
+			right.read(file);
 			
-			while (tail.next != -1) {
-				prevTail = tail;
-				prevPos = pos;
-				file.seekg(prevTail.next);
-				pos = file.tellg();
-				tail.read(file);
+			while (right.next != -1) {
+				left = right;
+				leftPos = rightPos;
+				file.seekg(left.next);
+				rightPos = file.tellg();
+				right.read(file);
 
-				if (prevTail > tail) {
-					swapNodes(prevTail, tail, prevPos, pos);
-					tail.prev = prevTail.prev;
-					tail.next = prevPos;
-					pos = prevPos;
+				if (left > right) {
+					swapNodes(left, right, leftPos, rightPos);
+					right.prev = left.prev;
+					right.next = leftPos;
+					rightPos = leftPos;
 				}
 			}
 
@@ -355,11 +356,11 @@ public:
 		}
 	}
 
-	std::string getListName() {
+	std::string getListName() const {
 		return name;
 	}
 
-	uint32_t getListSize() {
+	uint32_t getListSize() const {
 		return size;
 	}
 
@@ -389,7 +390,6 @@ private:
 	// Перезаписывает указатели списка first и last на актуальные версии,
 	// оставляет файловый указатель на первом записанном элементе в файле
 	void overwriteListPointers() {
-		file.clear();
 		file.seekg(0);
 		file.write(reinterpret_cast<char*>(&first), sizeof(first));
 		file.write(reinterpret_cast<char*>(&last), sizeof(last));
@@ -399,21 +399,19 @@ private:
 	// Перезаписывает указатели элемента списка на новые. Подразумевает, что
 	// указатель файла на начале элемента. В конце метода возвращается на него.
 	// Если полученный аргумент -2, то позиция указателя остаётся прежней
-	void overwriteNodePointers(int64_t _prev, int64_t _next) {
-		file.clear();
+	void overwriteNodePointers(int64_t prev, int64_t next) {
 		int64_t pos = file.tellg();
 
-		if (_prev == -2) {
-			file.seekg(sizeof(_prev), std::ios::cur);
+		if (prev == -2) {
+			file.seekg(sizeof(prev), std::ios::cur);
 		} else {
-			file.write(reinterpret_cast<char*>(&_prev), sizeof(_prev));
+			file.write(reinterpret_cast<char*>(&prev), sizeof(prev));
 		}
 
-		file.clear();
-		if (_next == -2) {
-			file.seekg(sizeof(_next), std::ios::cur);
+		if (next == -2) {
+			file.seekg(sizeof(next), std::ios::cur);
 		} else {
-			file.write(reinterpret_cast<char*>(&_next), sizeof(_next));
+			file.write(reinterpret_cast<char*>(&next), sizeof(next));
 		}
 
 		file.seekg(pos);
@@ -428,8 +426,6 @@ private:
 			first = rightPos;
 		}
 
-		file.clear();
-
 		if (right.next != -1) {
 			file.seekg(right.next);
 			overwriteNodePointers(leftPos, -2);
@@ -437,15 +433,11 @@ private:
 			last = leftPos;
 		}
 
-		file.clear();
-
 		file.seekg(leftPos);
 		overwriteNodePointers(rightPos, right.next);
-		file.clear();
 
 		file.seekg(rightPos);
 		overwriteNodePointers(left.prev, leftPos);
-		file.clear();
 
 		overwriteListPointers();
 		file.clear();
