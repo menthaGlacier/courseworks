@@ -61,13 +61,13 @@ public:
 		return totalSize;
 	}
 
-	// bool operator<(const Node<TT>& l, const Node<TT>& r) const {
-	// 	return l.data < r.data;
-	// }
+	bool operator<(const Node<std::string>& r) const {
+		return this->data.length() < r.data.length();
+	}
 
-	// bool operator>(const Node<std::string>& l, const Node<std::string>& r) const {
-	// 	return l.data > r.data;
-	// }
+	bool operator>(const Node<std::string>& r) const {
+		return this->data.length() > r.data.length();
+	}
 
 public:
 	std::string data;

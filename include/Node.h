@@ -49,6 +49,15 @@ public:
 		return totalSize;
 	}
 
+	bool operator<(const Node<TT>& r) const {
+		return this->data < r.data;
+	}
+
+	bool operator>(const Node<TT>& r) const {
+		return this->data > r.data;
+	}
+
+
 public:
 	TT data;
 	int64_t prev, next;

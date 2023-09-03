@@ -318,10 +318,41 @@ public:
 				file.seekg(tail.next);
 			}
 		}
+
+		file.clear();
 	}
 
 	void sort() {
+		Node<T> tail, prevTail;
+		int64_t pos, prevPos;
 
+		if (size < 2) {
+			std::cout << "Not enough elements to sort list" << std::endl;
+			return;
+		}
+		
+		for (uint32_t i = 0; i < size; i++) {
+			file.seekg(first);
+			pos = file.tellg();
+			tail.read(file);
+			
+			while (tail.next != -1) {
+				prevTail = tail;
+				prevPos = pos;
+				file.seekg(prevTail.next);
+				pos = file.tellg();
+				tail.read(file);
+
+				if (prevTail > tail) {
+					swapNodes(prevTail, tail, prevPos, pos);
+					tail.prev = prevTail.prev;
+					tail.next = prevPos;
+					pos = prevPos;
+				}
+			}
+
+			file.clear();
+		}
 	}
 
 	std::string getListName() {
@@ -362,6 +393,7 @@ private:
 		file.seekg(0);
 		file.write(reinterpret_cast<char*>(&first), sizeof(first));
 		file.write(reinterpret_cast<char*>(&last), sizeof(last));
+		file.clear();
 	}
 
 	// Перезаписывает указатели элемента списка на новые. Подразумевает, что
@@ -377,6 +409,7 @@ private:
 			file.write(reinterpret_cast<char*>(&_prev), sizeof(_prev));
 		}
 
+		file.clear();
 		if (_next == -2) {
 			file.seekg(sizeof(_next), std::ios::cur);
 		} else {
@@ -384,6 +417,38 @@ private:
 		}
 
 		file.seekg(pos);
+		file.clear();
+	}
+
+	void swapNodes(Node<T>& left, Node<T>& right, uint64_t leftPos, uint64_t rightPos) {
+		if (left.prev != -1) {
+			file.seekg(left.prev);
+			overwriteNodePointers(-2, rightPos);
+		} else {
+			first = rightPos;
+		}
+
+		file.clear();
+
+		if (right.next != -1) {
+			file.seekg(right.next);
+			overwriteNodePointers(leftPos, -2);
+		} else {
+			last = leftPos;
+		}
+
+		file.clear();
+
+		file.seekg(leftPos);
+		overwriteNodePointers(rightPos, right.next);
+		file.clear();
+
+		file.seekg(rightPos);
+		overwriteNodePointers(left.prev, leftPos);
+		file.clear();
+
+		overwriteListPointers();
+		file.clear();
 	}
 
 private:
